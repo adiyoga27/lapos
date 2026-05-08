@@ -19,10 +19,15 @@ class AppServiceProvider extends ServiceProvider
             if (!$user) {
                 return false;
             }
-            if ($user->isAdmin()) {
-                return true;
-            }
             return $user->hasPermission($permission);
+        });
+
+        Blade::if('permAny', function (string ...$permissions) {
+            $user = auth()->user();
+            if (!$user) {
+                return false;
+            }
+            return $user->hasAnyPermission($permissions);
         });
     }
 }

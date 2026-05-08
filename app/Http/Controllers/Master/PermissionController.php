@@ -67,14 +67,16 @@ class PermissionController extends Controller
     {
         $level = Level::findOrFail($id);
 
-        LevelPermission::where('level_kode', $level->kode)->delete();
+        \DB::connection('toko')->table('level_permission')->where('level_kode', $level->kode)->delete();
 
         $permissions = $request->input('permissions', []);
+        $insertData = [];
         foreach ($permissions as $perm) {
-            LevelPermission::create([
-                'level_kode' => $level->kode,
-                'permission' => $perm,
-            ]);
+            $insertData[] = ['level_kode' => $level->kode, 'permission' => $perm];
+        }
+
+        if (!empty($insertData)) {
+            \DB::connection('toko')->table('level_permission')->insert($insertData);
         }
 
         return redirect()->route('permission.index')

@@ -28,33 +28,45 @@ class User extends Authenticatable
         return $this->belongsTo(Level::class, 'level', 'kode');
     }
 
-    public function hasPermission(string $permission): bool
-    {
-        if (!$this->level) {
-            return false;
-        }
-        $level = Level::find($this->level);
-        if (!$level) {
-            return false;
-        }
-        return $level->hasPermission($permission);
-    }
-
-    public function getPermissions(): array
-    {
-        if (!$this->level) {
-            return [];
-        }
-        $level = Level::find($this->level);
-        if (!$level) {
-            return [];
-        }
-        return $level->getPermissionList();
-    }
-
     public function isAdmin(): bool
     {
-        $adminLevels = ['ADMIN', 'admin', 'Admin'];
-        return in_array($this->level, $adminLevels);
+        return in_array($this->level, ['ADMIN', 'admin']);
+    }
+
+    public function hasPermission(string $permission): bool
+    {
+        if ($this->isAdmin()) {
+            return true;
+        }
+
+        if (empty($this->level)) {
+            return false;
+        }
+
+        static $cache = [];
+        $key = $this->level;
+        if (!isset($cache[$key])) {
+            $level = Level::find($this->level);
+            $cache[$key] = $level ? $level->getPermissionList() : [];
+        }
+        return in_array($permission, $cache[$key]);
+    }
+
+    public function hasAnyPermission(array $permissions): bool
+    {
+        if ($this->isAdmin()) {
+            return true;
+        }
+
+        if (empty($this->level)) {
+            return false;
+        }
+
+        foreach ($permissions as $perm) {
+            if ($this->hasPermission($perm)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

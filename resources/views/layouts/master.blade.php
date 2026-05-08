@@ -9,7 +9,7 @@
     @include('layouts.head-css')
     <style>
         body { font-size: 0.875rem; }
-        #sidebar { width: 260px; min-height: 100vh; position: fixed; top: 0; left: 0; z-index: 1000; transition: all 0.3s; overflow-y: auto; }
+        #sidebar { width: 260px; height: 100vh; position: fixed; top: 0; left: 0; z-index: 1000; transition: all 0.3s; overflow-y: auto; overflow-x: hidden; }
         #sidebar.collapsed { width: 0; overflow: hidden; }
         #content { margin-left: 260px; transition: all 0.3s; min-height: 100vh; }
         #content.expanded { margin-left: 0; }

@@ -17,6 +17,7 @@
                 <a href="{{ route('dashboard') }}" class="nav-link"><i class="fa-solid fa-gauge me-2"></i>Dashboard</a>
             </li>
 
+            @permAny('barang','jasa','kas','biaya','pelanggan','member','supplier','karyawan','kategori','golongan','sales','area','kota','ukuran','warna','satuan','pajak','level','bank')
             <li class="menu-title">Data Master</li>
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#menuData"><i class="fa-solid fa-box me-2"></i>Data</a>
@@ -29,7 +30,7 @@
                     </ul>
                 </div>
             </li>
-            @perm('pelanggan')
+            @permAny('pelanggan','member')
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#menuPelanggan"><i class="fa-solid fa-users me-2"></i>Pelanggan</a>
                 <div class="collapse" id="menuPelanggan">
@@ -41,9 +42,10 @@
                     </ul>
                 </div>
             </li>
-            @endperm
+            @endpermAny
             @perm('supplier')<li class="nav-item"><a href="{{ route('supplier.index') }}" class="nav-link"><i class="fa-solid fa-truck me-2"></i>Supplier</a></li>@endperm
             @perm('karyawan')<li class="nav-item"><a href="{{ route('karyawan.index') }}" class="nav-link"><i class="fa-solid fa-user-tie me-2"></i>Karyawan</a></li>@endperm
+            @permAny('kategori','golongan','sales','area','kota','ukuran','warna','satuan','pajak','level','bank')
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#menuLainnya"><i class="fa-solid fa-ellipsis me-2"></i>Lainnya</a>
                 <div class="collapse" id="menuLainnya">
@@ -62,7 +64,10 @@
                     </ul>
                 </div>
             </li>
+            @endpermAny
+            @endpermAny
 
+            @permAny('pembelian','penjualan','return_pembelian','return_penjualan','hutang','piutang')
             <li class="menu-title">Transaksi</li>
             @perm('pembelian')
             <li class="nav-item">
@@ -76,7 +81,7 @@
             </li>
             @endperm
             @perm('penjualan')<li class="nav-item"><a href="{{ route('penjualan.index') }}" class="nav-link"><i class="fa-solid fa-cash-register me-2"></i>Jual</a></li>@endperm
-            @perm('return_pembelian')
+            @permAny('return_pembelian','return_penjualan')
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#menuReturn"><i class="fa-solid fa-rotate-left me-2"></i>Return</a>
                 <div class="collapse" id="menuReturn">
@@ -87,8 +92,8 @@
                     </ul>
                 </div>
             </li>
-            @endperm
-            @perm('hutang')
+            @endpermAny
+            @permAny('hutang','piutang')
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#menuHutangPiutang"><i class="fa-solid fa-money-bill-transfer me-2"></i>Hutang Piutang</a>
                 <div class="collapse" id="menuHutangPiutang">
@@ -100,8 +105,10 @@
                     </ul>
                 </div>
             </li>
-            @endperm
+            @endpermAny
+            @endpermAny
 
+            @permAny('pemasukan','pengeluaran','mutasikas','absensi','voucher')
             <li class="menu-title">Back Office</li>
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#menuBackOffice"><i class="fa-solid fa-building me-2"></i>Back Office</a>
@@ -130,6 +137,8 @@
                 </div>
             </li>
             @endperm
+            @endpermAny
+
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#menuPengaturan"><i class="fa-solid fa-gear me-2"></i>Pengaturan</a>
                 <div class="collapse" id="menuPengaturan">
@@ -142,6 +151,7 @@
                 </div>
             </li>
 
+            @permAny('laporan_pembelian','laporan_penjualan','laporan_stok','laporan_laba_rugi','laporan_kas','laporan_hutang_piutang')
             <li class="menu-title">Laporan</li>
             @perm('laporan_pembelian')
             <li class="nav-item">
@@ -206,6 +216,7 @@
                 </div>
             </li>
             @endperm
+            @endpermAny
 
         </ul>
     </div>

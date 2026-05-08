@@ -12,7 +12,7 @@ class LevelPermission extends TokoModel
 
     protected $fillable = ['level_kode', 'permission'];
 
-    protected $primaryKey = ['level_kode', 'permission'];
+    protected $primaryKey = 'level_kode';
 
     public function level(): BelongsTo
     {
