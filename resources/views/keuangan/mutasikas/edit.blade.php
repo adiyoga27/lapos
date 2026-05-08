@@ -1,0 +1,66 @@
+@extends('layouts.master')
+
+@section('title', 'Edit Mutasi Kas')
+
+@section('content')
+<div class="container" style="max-width:600px;">
+    <div class="card">
+        <form action="{{ route('mutasikas.update', $mutasikas->kode) }}" method="POST">
+            @csrf
+            @method('PUT')
+            <div class="card-body">
+                <div class="row g-3 mb-3">
+                    <div class="col-sm-6">
+                        <label for="dari" class="form-label">Dari Kas</label>
+                        <select name="dari" id="dari" required class="form-select">
+                            <option value="">-- Pilih Kas --</option>
+                            @foreach($kasList as $k)
+                                <option value="{{ $k->kode }}" {{ old('dari', $mutasikas->dari) == $k->kode ? 'selected' : '' }}>
+                                    {{ $k->nama }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('dari') <p class="text-danger small mt-1">{{ $message }}</p> @enderror
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="ke" class="form-label">Ke Kas</label>
+                        <select name="ke" id="ke" required class="form-select">
+                            <option value="">-- Pilih Kas --</option>
+                            @foreach($kasList as $k)
+                                <option value="{{ $k->kode }}" {{ old('ke', $mutasikas->ke) == $k->kode ? 'selected' : '' }}>
+                                    {{ $k->nama }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('ke') <p class="text-danger small mt-1">{{ $message }}</p> @enderror
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="jumlah" class="form-label">Jumlah (Rp)</label>
+                    <input type="number" name="jumlah" id="jumlah" value="{{ old('jumlah', $mutasikas->jumlah) }}" required min="1"
+                           class="form-control">
+                    @error('jumlah') <p class="text-danger small mt-1">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label for="keterangan" class="form-label">Keterangan</label>
+                    <textarea name="keterangan" id="keterangan" rows="3"
+                              class="form-control" placeholder="Catatan mutasi kas...">{{ old('keterangan', $mutasikas->keterangan) }}</textarea>
+                    @error('keterangan') <p class="text-danger small mt-1">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label for="tanggal" class="form-label">Tanggal</label>
+                    <input type="date" name="tanggal" id="tanggal" value="{{ old('tanggal', \Carbon\Carbon::parse($mutasikas->tanggal)->format('Y-m-d')) }}" required class="form-control">
+                    @error('tanggal') <p class="text-danger small mt-1">{{ $message }}</p> @enderror
+                </div>
+            </div>
+            <div class="card-footer d-flex justify-content-end gap-2">
+                <a href="{{ route('mutasikas.index') }}" class="btn btn-outline-secondary">Batal</a>
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i> Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+@endsection
