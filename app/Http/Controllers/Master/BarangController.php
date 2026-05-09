@@ -48,6 +48,7 @@ class BarangController extends Controller
             'kode' => 'required|string|max:25|unique:barang,kode',
             'nama' => 'nullable|string|max:50',
             'kategori' => 'nullable|string|max:50',
+            'satuanbeli' => 'nullable|string|max:25',
             'satuan' => 'nullable|string|max:25',
             'satuan2' => 'nullable|string|max:25',
             'satuan3' => 'nullable|string|max:25',
@@ -64,11 +65,28 @@ class BarangController extends Controller
             'harga_cabang' => 'nullable|numeric',
             'harga_cabang2' => 'nullable|numeric',
             'harga_cabang3' => 'nullable|numeric',
+            'margin_toko' => 'nullable|numeric',
+            'margin_toko2' => 'nullable|numeric',
+            'margin_toko3' => 'nullable|numeric',
+            'margin_partai' => 'nullable|numeric',
+            'margin_partai2' => 'nullable|numeric',
+            'margin_partai3' => 'nullable|numeric',
+            'margin_cabang' => 'nullable|numeric',
+            'harga_member' => 'nullable|numeric',
+            'harga_karyawan' => 'nullable|numeric',
             'toko' => 'nullable|numeric',
             'gudang' => 'nullable|numeric',
+            'toko_rusak' => 'nullable|numeric',
+            'gudang_rusak' => 'nullable|numeric',
             'diskon' => 'nullable|numeric',
+            'diskon_toko' => 'nullable|numeric',
+            'diskon_partai' => 'nullable|numeric',
+            'point' => 'nullable|numeric',
+            'point_m' => 'nullable|numeric',
             'stokmin' => 'nullable|numeric',
             'stokmax' => 'nullable|numeric',
+            'stokmin_gudang' => 'nullable|numeric',
+            'stokmax_gudang' => 'nullable|numeric',
             'kode_barcode' => 'nullable|string|max:25',
             'kode_barcode2' => 'nullable|string|max:25',
             'kode_barcode3' => 'nullable|string|max:25',
@@ -76,11 +94,39 @@ class BarangController extends Controller
             'warna' => 'nullable|string|max:25',
             'supplier' => 'nullable|string|max:15',
             'pajak' => 'nullable|string|max:15',
+            'merk' => 'nullable|string|max:50',
+            'lokasi' => 'nullable|string|max:50',
+            'nama2' => 'nullable|string|max:50',
+            'nama3' => 'nullable|string|max:50',
+            'tipe_disc_member' => 'nullable|string|max:5',
+            'jum_diskon_member' => 'nullable|numeric',
+            'jum_komisi_sales' => 'nullable|numeric',
             'expired' => 'nullable|date',
             'ket' => 'nullable|string',
+            'gambar' => 'nullable|image|max:2048',
+            'gambar2' => 'nullable|image|max:2048',
         ]);
 
-        Barang::create($request->all());
+        $data = $request->except(['gambar', 'gambar2']);
+        $data['nol_price'] = $request->has('nol_price') ? 1 : 0;
+        $data['nol_price_diskon'] = $request->has('nol_price_diskon') ? 1 : 0;
+        $data['ada_expired_date'] = $request->has('ada_expired_date') ? 1 : 0;
+        $data['paket'] = $request->has('paket') ? 1 : 0;
+
+        if ($request->hasFile('gambar')) {
+            $file = $request->file('gambar');
+            $filename = time() . '_1.' . $file->getClientOriginalExtension();
+            $file->move(public_path('build/images/barang'), $filename);
+            $data['gambar'] = $filename;
+        }
+        if ($request->hasFile('gambar2')) {
+            $file = $request->file('gambar2');
+            $filename = time() . '_2.' . $file->getClientOriginalExtension();
+            $file->move(public_path('build/images/barang'), $filename);
+            $data['gambar2'] = $filename;
+        }
+
+        Barang::create($data);
 
         return redirect()->route('barang.index')
             ->with('success', 'Barang berhasil ditambahkan.');
@@ -113,6 +159,7 @@ class BarangController extends Controller
             'kode' => 'required|string|max:25|unique:barang,kode,' . $id . ',kode',
             'nama' => 'nullable|string|max:50',
             'kategori' => 'nullable|string|max:50',
+            'satuanbeli' => 'nullable|string|max:25',
             'satuan' => 'nullable|string|max:25',
             'satuan2' => 'nullable|string|max:25',
             'satuan3' => 'nullable|string|max:25',
@@ -129,11 +176,28 @@ class BarangController extends Controller
             'harga_cabang' => 'nullable|numeric',
             'harga_cabang2' => 'nullable|numeric',
             'harga_cabang3' => 'nullable|numeric',
+            'margin_toko' => 'nullable|numeric',
+            'margin_toko2' => 'nullable|numeric',
+            'margin_toko3' => 'nullable|numeric',
+            'margin_partai' => 'nullable|numeric',
+            'margin_partai2' => 'nullable|numeric',
+            'margin_partai3' => 'nullable|numeric',
+            'margin_cabang' => 'nullable|numeric',
+            'harga_member' => 'nullable|numeric',
+            'harga_karyawan' => 'nullable|numeric',
             'toko' => 'nullable|numeric',
             'gudang' => 'nullable|numeric',
+            'toko_rusak' => 'nullable|numeric',
+            'gudang_rusak' => 'nullable|numeric',
             'diskon' => 'nullable|numeric',
+            'diskon_toko' => 'nullable|numeric',
+            'diskon_partai' => 'nullable|numeric',
+            'point' => 'nullable|numeric',
+            'point_m' => 'nullable|numeric',
             'stokmin' => 'nullable|numeric',
             'stokmax' => 'nullable|numeric',
+            'stokmin_gudang' => 'nullable|numeric',
+            'stokmax_gudang' => 'nullable|numeric',
             'kode_barcode' => 'nullable|string|max:25',
             'kode_barcode2' => 'nullable|string|max:25',
             'kode_barcode3' => 'nullable|string|max:25',
@@ -141,11 +205,39 @@ class BarangController extends Controller
             'warna' => 'nullable|string|max:25',
             'supplier' => 'nullable|string|max:15',
             'pajak' => 'nullable|string|max:15',
+            'merk' => 'nullable|string|max:50',
+            'lokasi' => 'nullable|string|max:50',
+            'nama2' => 'nullable|string|max:50',
+            'nama3' => 'nullable|string|max:50',
+            'tipe_disc_member' => 'nullable|string|max:5',
+            'jum_diskon_member' => 'nullable|numeric',
+            'jum_komisi_sales' => 'nullable|numeric',
             'expired' => 'nullable|date',
             'ket' => 'nullable|string',
+            'gambar' => 'nullable|image|max:2048',
+            'gambar2' => 'nullable|image|max:2048',
         ]);
 
-        $barang->update($request->all());
+        $data = $request->except(['gambar', 'gambar2']);
+        $data['nol_price'] = $request->has('nol_price') ? 1 : 0;
+        $data['nol_price_diskon'] = $request->has('nol_price_diskon') ? 1 : 0;
+        $data['ada_expired_date'] = $request->has('ada_expired_date') ? 1 : 0;
+        $data['paket'] = $request->has('paket') ? 1 : 0;
+
+        if ($request->hasFile('gambar')) {
+            $file = $request->file('gambar');
+            $filename = time() . '_1.' . $file->getClientOriginalExtension();
+            $file->move(public_path('build/images/barang'), $filename);
+            $data['gambar'] = $filename;
+        }
+        if ($request->hasFile('gambar2')) {
+            $file = $request->file('gambar2');
+            $filename = time() . '_2.' . $file->getClientOriginalExtension();
+            $file->move(public_path('build/images/barang'), $filename);
+            $data['gambar2'] = $filename;
+        }
+
+        $barang->update($data);
 
         return redirect()->route('barang.index')
             ->with('success', 'Barang berhasil diperbarui.');
