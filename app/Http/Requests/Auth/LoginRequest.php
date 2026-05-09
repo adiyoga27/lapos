@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\Karyawan;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -37,27 +38,22 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        $credentials = $this->only('username', 'password');
+        $username = $this->input('username');
+        $password = $this->input('password');
 
-        if (! Auth::attempt($credentials, $this->boolean('remember'))) {
-            // Fallback: try with empty password for master user
-            if (empty($credentials['password'])) {
-                $user = \App\Models\User::where('username', $credentials['username'])->first();
-                if ($user && \Illuminate\Support\Facades\Hash::check('', $user->password)) {
-                    Auth::login($user, $this->boolean('remember'));
-                    RateLimiter::clear($this->throttleKey());
-                    return;
-                }
-            }
+        $karyawan = Karyawan::where('kode', $username)->first();
 
-            RateLimiter::hit($this->throttleKey());
-
-            throw ValidationException::withMessages([
-                'username' => trans('auth.failed'),
-            ]);
+        if ($karyawan && $karyawan->checkPassword($password ?? '')) {
+            Auth::guard('karyawan')->login($karyawan);
+            RateLimiter::clear($this->throttleKey());
+            return;
         }
 
-        RateLimiter::clear($this->throttleKey());
+        RateLimiter::hit($this->throttleKey());
+
+        throw ValidationException::withMessages([
+            'username' => trans('auth.failed'),
+        ]);
     }
 
     public function ensureIsNotRateLimited(): void
